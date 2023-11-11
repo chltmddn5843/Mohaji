@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야, 뭐하고 놀래?</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <h1>야, 뭐하고 놀래?</h1>
+    <form id="fortuneForm">
+        <label for="people">인원 수:</label>
+        <select id="people" name="people">
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="5">5명</option>
+        </select>
+
+        <br>
+
+        <label for="time">만나는 시간대:</label>
+        <input type="time" id="time" name="time" min="00:00" max="23:59">
+
+        <br>
+
+        <label for="budget">예산:</label>
+        <select id="budget" name="budget">
+            <option value="0-10000">1만원 이하</option>
+            <option value="10000-30000">1만원 ~ 3만원</option>
+            <option value="30000-50000">3만원 ~ 5만원</option>
+        </select>
+    </form>
+
+    <button onclick="getFortune()">요청하기</button>
+
+    <div id="responseContainer">
+        <h2>서버 응답:</h2>
+        <p id="responseContent"></p>
+    </div>
+
+    <script>
+        async function getFortune() {
+            try {
+                const people = document.getElementById('people').value;
+                const time = document.getElementById('time').value;
+                const budget = document.getElementById('budget').value;
+
+                const response = await fetch('http://localhost:3000/fortuneTell', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        people: people,
+                        time: time,
+                        budget: budget,
+                    }),
+                });
+
+                const data = await response.json();
+                const responseContent = document.getElementById('responseContent');
+                responseContent.innerText = data.assistant;
+
+                console.log(data);
+                return data;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
